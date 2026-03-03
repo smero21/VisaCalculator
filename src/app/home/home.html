@@ -1,0 +1,16 @@
+<header></header>
+<div>
+    
+        <input type="date" class="initialDate"/>
+        <input type="date" class="finalDate"/>
+        <br>
+    
+    <button (click)="calculateDates()">Calcular tiempo</button>
+    <p class="result">El total de días es de : {{ diffInDays }}</p>
+    @if(diffInDays < 90 && isActive){
+        <p class="missingDays">Faltan {{ 90 - diffInDays }} días para completar los 90 días.</p>
+        <p>Puede estar hasta el día {{ lastDayStay.toLocaleDateString() }}</p>
+        <p>Proximo ingreso con 90 días: {{ reEnter90Days.toLocaleDateString() }}</p>
+    }
+</div>
+<footer></footer>
