@@ -1,16 +1,53 @@
 <header></header>
-<div>
-    
-        <input type="date" class="initialDate"/>
-        <input type="date" class="finalDate"/>
+<div class="container">
+    <h3>Rango de fechas</h3>
+
+    @for(date of dates; track $index){
+    <div class="date-range">
+
+        @if($index > 0){
+            <div class="date-range-container">
+                <label>Inicio</label>
+                <input type="date" [(ngModel)]="date.initialDate" [max]="date.max" id="initialDate{{$index}}" />
+            </div>
+            <div class="space-between"></div>
+            <div class="date-range-container">
+                <div class="title-line">
+                    <label>Fin</label>
+                    <button (click)="removeStay($index)" class="remove-button">X</button>
+                </div>
+                <input type="date" [(ngModel)]="date.finalDate" [min]="date.min" id="finalDate{{$index}}" />
+            </div>  
+        } @else {
+            
+            <div class="date-range-container">
+                <label>Inicio</label>
+                <input type="date" [(ngModel)]="date.initialDate" id="initialDate{{$index}}" />
+            </div>
+                <div class="space-between"></div>
+            <div class="date-range-container">
+                <label>Fin</label>
+                <input type="date" [(ngModel)]="date.finalDate" id="finalDate{{$index}}" />
+            </div>
+        }
         <br>
-    
-    <button (click)="calculateDates()">Calcular tiempo</button>
-    <p class="result">El total de días es de : {{ diffInDays }}</p>
-    @if(diffInDays < 90 && isActive){
-        <p class="missingDays">Faltan {{ 90 - diffInDays }} días para completar los 90 días.</p>
-        <p>Puede estar hasta el día {{ lastDayStay.toLocaleDateString() }}</p>
-        <p>Proximo ingreso con 90 días: {{ reEnter90Days.toLocaleDateString() }}</p>
+    </div>
     }
+
+    <div class="buttons">
+        <button (click)="addDateRange()">Añadir</button>
+        <button (click)="resetForm()" class="reset">Resetear</button>
+    </div>
+    <button (click)="calculateDates()" class="calculate-button">Calcular tiempo</button>
+
+    <div class="results">
+
+        <p class="result">El total de días es de : {{ diffInDays }}</p>
+        @if(diffInDays < 90 && isActive){ <p class="missingDays">Faltan {{ 90 - diffInDays }} días para completar los 90
+            días.</p>
+            <p>Puede estar hasta el día {{ lastDayStay.toLocaleDateString() }}</p>
+            <p>Proximo ingreso con 90 días: {{ reEnter90Days }}</p>
+        }
+    </div>
 </div>
 <footer></footer>

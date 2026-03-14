@@ -1,33 +1,38 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class Home {
   diffInDays: number = 0;
   lastDayStay: Date = new Date();
-  reEnter90Days: Date = new Date();
+  reEnter90Days: String = '';
   isActive: boolean = false;
+  dates: Array<{ initialDate: Date | null, finalDate: Date | null, min: Date | null, max: Date | null }> = [
+    { initialDate: null, finalDate: null, min: null, max: null }
+  ];
+
+  constructor() {
+  }
 
   calculateDates() {
-    var initialDate = document.querySelector('.initialDate') as HTMLInputElement;
-    var finalDate = document.querySelector('.finalDate') as HTMLInputElement;
+    for (let date in this.dates) {
+      if (!this.dates[date].initialDate || !this.dates[date].finalDate) {
+        alert('Por favor, ingrese ambas fechas.');
+        return;
+      }
+      if (this.dates[date].initialDate > this.dates[date].finalDate) {
+        alert('La fecha inicial no puede ser mayor que la fecha final.');
+        return;
+      }
+    }
 
-    if (!initialDate.value || !finalDate.value) {
-      alert('Por favor, ingrese ambas fechas.');
-      return;
-    }
-    var initial: Date = new Date(initialDate.valueAsDate!.getTime());
-    var final: Date = new Date(finalDate.valueAsDate!.getTime());
-    if (initial > final) {
-      alert('La fecha inicial no puede ser mayor que la fecha final.');
-      return;
-    }
     try {
-      const result = this.calculateStayDays(initial, final);
+      const result = this.calculateStayDays(this.dates);
       this.diffInDays = result.diffInDays;
       this.isActive = true;
       this.lastDayStay = result.lastDayStay;
@@ -37,23 +42,63 @@ export class Home {
     }
   }
 
-  private calculateStayDays(initial: Date, final: Date) {
-    const diffInTime = final.getTime() - initial.getTime();
-    const diffInDays = diffInTime / (1000 * 60 * 60 * 24) + 1;
-    //console.log('Final: ', final.getTime() / (1000 * 60 * 60 * 24), ' Inicial: ', initial.getTime() / (1000 * 60 * 60 * 24));
-    //var diff: Date = new Date(diffInTime);
-    //console.log(diff);
+
+  private calculateStayDays(dates: any[]) {
+    let finalDay: string = dates[dates.length - 1].finalDate;
+    let finalDayMlSec = Date.parse(finalDay);
+    let minCountableDay = finalDayMlSec - (180 * 24 * 60 * 60 * 1000);
+    let sumDates = 0;
+    let initialCountableDate: number = 0;
+    console.log('Final: ', finalDay, ' Min countable: ', minCountableDay);
+
+    for (let date in this.dates) {
+      let final = new Date(!this.dates[date].finalDate ? new Date() : this.dates[date].finalDate);
+      let initial = new Date(!this.dates[date].initialDate ? new Date() : this.dates[date].initialDate);
+      if (initial.getTime() < minCountableDay && final.getTime() < minCountableDay) {
+        continue;
+      } else if (initial.getTime() < minCountableDay) {
+        initialCountableDate = minCountableDay;
+      } else {
+        initialCountableDate = initial.getTime();
+      }
+      // + 1 because the final date also counts in the countable days inside the schenguen zone
+      const diffInTime = final.getTime() + (1000 * 60 * 60 * 24) - initialCountableDate;
+      sumDates += diffInTime;
+    }
+
+    const diffInDays = sumDates / (1000 * 60 * 60 * 24);
     if (this.diffInDays > 90) {
       throw new Error('La diferencia entre las fechas es mayor a 90 días.');
     }
     const lastDayStay = new Date(
-      final.getTime() + ((89 * 24 * 60 * 60 * 1000) - diffInTime)
+      finalDayMlSec + ((89 * 24 * 60 * 60 * 1000) - sumDates)
     );
-    const reEnter90Days = new Date(
-      final.getTime() + (1000 * 60 * 60 * 24 * 179)
-    );
-
-
+    const reEnter90Days: String = new Date(
+      finalDayMlSec + (1000 * 60 * 60 * 24 * 180)
+    ).toLocaleDateString();
     return { diffInDays, lastDayStay, reEnter90Days };
+  }
+
+  addDateRange() {
+    this.dates.push({ initialDate: null, finalDate: null, min: null, max: null });
+    console.log(this.dates);
+  }
+  removeStay(index: number) {
+    this.dates.splice(index, 1);
+  }
+  resetForm() {
+    this.diffInDays = 0;
+    this.isActive = false;
+    this.dates.splice(1, this.dates.length);
+    this.dates[0].initialDate = null;
+    this.dates[0].finalDate = null;
+  }
+  dateLimitator(type:string, idNumberPart:number){
+    this.dates.forEach(element => {
+      if(element.initialDate){
+        const finalDateInput = document.getElementById(`${type}${idNumberPart + 1}`) as HTMLInputElement;
+        finalDateInput.min = element.initialDate.toString();
+      }
+    });
   }
 }
