@@ -8,7 +8,7 @@
         @if($index > 0){
             <div class="date-range-container">
                 <label>Inicio</label>
-                <input type="date" [(ngModel)]="date.initialDate" [max]="date.max" id="initialDate{{$index}}" />
+                <input type="date" [(ngModel)]="date.initialDate" [min]="dates[$index - 1].finalDate" [max]="date.finalDate" id="initialDate{{$index}}" />
             </div>
             <div class="space-between"></div>
             <div class="date-range-container">
@@ -16,18 +16,18 @@
                     <label>Fin</label>
                     <button (click)="removeStay($index)" class="remove-button">X</button>
                 </div>
-                <input type="date" [(ngModel)]="date.finalDate" [min]="date.min" id="finalDate{{$index}}" />
+                <input type="date" [(ngModel)]="date.finalDate" [min]="date.initialDate" id="finalDate{{$index}}" />
             </div>  
         } @else {
             
             <div class="date-range-container">
                 <label>Inicio</label>
-                <input type="date" [(ngModel)]="date.initialDate" id="initialDate{{$index}}" />
+                <input type="date" [(ngModel)]="date.initialDate" id="initialDate{{$index}}" [max]="date.finalDate"/>
             </div>
                 <div class="space-between"></div>
             <div class="date-range-container">
                 <label>Fin</label>
-                <input type="date" [(ngModel)]="date.finalDate" id="finalDate{{$index}}" />
+                <input type="date" [(ngModel)]="date.finalDate" id="finalDate{{$index}}" [min]="date.initialDate" />
             </div>
         }
         <br>

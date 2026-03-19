@@ -12,8 +12,8 @@ export class Home {
   lastDayStay: Date = new Date();
   reEnter90Days: String = '';
   isActive: boolean = false;
-  dates: Array<{ initialDate: Date | null, finalDate: Date | null, min: Date | null, max: Date | null }> = [
-    { initialDate: null, finalDate: null, min: null, max: null }
+  dates: Array<{ initialDate: Date | null, finalDate: Date | null }> = [
+    { initialDate: null, finalDate: null }
   ];
 
   constructor() {
@@ -23,10 +23,6 @@ export class Home {
     for (let date in this.dates) {
       if (!this.dates[date].initialDate || !this.dates[date].finalDate) {
         alert('Por favor, ingrese ambas fechas.');
-        return;
-      }
-      if (this.dates[date].initialDate > this.dates[date].finalDate) {
-        alert('La fecha inicial no puede ser mayor que la fecha final.');
         return;
       }
     }
@@ -80,7 +76,7 @@ export class Home {
   }
 
   addDateRange() {
-    this.dates.push({ initialDate: null, finalDate: null, min: null, max: null });
+    this.dates.push({ initialDate: null, finalDate: null });
     console.log(this.dates);
   }
   removeStay(index: number) {
@@ -92,13 +88,5 @@ export class Home {
     this.dates.splice(1, this.dates.length);
     this.dates[0].initialDate = null;
     this.dates[0].finalDate = null;
-  }
-  dateLimitator(type:string, idNumberPart:number){
-    this.dates.forEach(element => {
-      if(element.initialDate){
-        const finalDateInput = document.getElementById(`${type}${idNumberPart + 1}`) as HTMLInputElement;
-        finalDateInput.min = element.initialDate.toString();
-      }
-    });
   }
 }
