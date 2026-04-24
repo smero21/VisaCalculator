@@ -1,0 +1,28 @@
+svg {
+    max-width: 100%;
+    width: 1000px;
+    height: 680px;
+}
+.map-container {
+    display: flex;
+    justify-content: center;
+}
+.map-container path{
+    fill: rgb(97, 97, 205);
+    stroke: black;
+    stroke-width: .7;
+}
+.map-container path:hover{
+    fill: rgb(97, 97, 205, .5);
+    stroke: black;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: .1;
+}
+.map-container path.no-schengen{
+    fill: rgb(205, 97, 97);
+}
+.map-container path.no-schengen:hover{
+    fill: rgb(205, 97, 97, .5);
+}

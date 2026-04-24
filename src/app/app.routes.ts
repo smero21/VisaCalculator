@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Home } from './home/home';
+import { SchengenInfo } from './schengen-info/schengen-info';
 
 export const routes: Routes = [
 
@@ -8,6 +9,9 @@ export const routes: Routes = [
     },
     {
         path: 'home', component: Home
+    },
+    {
+        path: 'shengen-info', component : SchengenInfo 
     }
 
 ];
